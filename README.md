@@ -1,54 +1,82 @@
-# Jogo da Memória: Times de Futebol com Múltiplos Displays OLED
+# Memory Game: Football Teams with Multiple OLED Displays
 
-## Descrição do Projeto
-Este projeto consiste em um jogo da memória físico interativo, desenvolvido em C/C++ para microcontroladores. O sistema utiliza 8 displays OLED individuais para exibir emblemas de times de futebol de diversos torneios mundiais. 
+## Project Description
 
-O jogador seleciona um torneio, memoriza a posição dos emblemas exibidos temporariamente nos 8 displays e, em seguida, utiliza botões físicos dedicados para tentar encontrar os pares correspondentes. O jogo conta com feedback sonoro (buzzer) para acertos, erros e uma melodia de vitória ao finalizar a partida.
+This project implements a **physical interactive memory game**, developed in **C/C++ for microcontrollers**. The system uses **8 individual OLED displays** to show football team emblems from several international tournaments.
 
-**Autoria:** Paulo H. Langone - SENAI Anchieta (CST Eletrônica Industrial - EXTUN4)
+The player selects a tournament, memorizes the position of the emblems temporarily displayed on the 8 screens, and then uses dedicated **physical buttons** to try to find the matching pairs. The game includes **audio feedback (buzzer)** for correct and incorrect guesses, as well as a **victory melody** when the game is completed.
 
-## Funcionalidades
-* **Menu de Seleção de Torneios:** 8 opções de ligas (Brasileirão, Bundesliga, Copa do Mundo, La Liga, MLS, Premier League, Serie A, UAFA).
-* **Embaralhamento Aleatório:** Algoritmo que garante que as posições dos times sejam diferentes a cada nova rodada.
-* **Multiplexação de Displays:** Controle de 8 displays I2C de mesmo endereço (0x3C) através de seleção de hardware (multiplexador demultiplexador no barramento SDA/SCL).
-* **Feedback Audiovisual:** Sinais sonoros distintos para jogadas corretas e incorretas, além de animação e música ao concluir o jogo.
+**Author:** Paulo H. Langone – SENAI Anchieta (Industrial Electronics Technology Program – EXTUN4)
 
-## Hardware Necessário
-* 1x Microcontrolador (Ex: ESP32)
-* 8x Displays OLED SSD1306 (128x64 pixels, interface I2C)
-* 8x Botões (Push-buttons)
-* 1x Buzzer
-* 1x Multiplexador (Ex: CD74HC4051 ou similar) para gerenciar a comunicação I2C dos displays.
+---
 
-### Mapeamento de Pinos (Pinout)
-| Componente | Pino no Microcontrolador |
-| :--- | :--- |
+## Features
+
+* **Tournament Selection Menu:** 8 league options (Brasileirão, Bundesliga, World Cup, La Liga, MLS, Premier League, Serie A, UAFA).
+* **Random Shuffling:** Algorithm that ensures team positions change in every new round.
+* **Display Multiplexing:** Control of 8 I2C displays with the same address (0x3C) using **hardware selection via a multiplexer/demultiplexer on the SDA/SCL bus**.
+* **Audiovisual Feedback:** Distinct sound signals for correct and incorrect moves, plus animation and music when the game is completed.
+
+---
+
+## Required Hardware
+
+* 1× Microcontroller (e.g., **ESP32**)
+* 8× **SSD1306 OLED Displays** (128×64 pixels, I2C interface)
+* 8× Push-buttons
+* 1× Buzzer
+* 1× Multiplexer (e.g., **CD74HC4051** or similar) to manage the I2C communication between displays.
+
+---
+
+### Pin Mapping (Pinout)
+
+| Component | Microcontroller Pin |
+|-----------|--------------------|
 | **Buzzer** | GPIO 16 |
-| **Botão 0** | GPIO 13 |
-| **Botão 1** | GPIO 12 |
-| **Botão 2** | GPIO 14 |
-| **Botão 3** | GPIO 27 |
-| **Botão 4** | GPIO 26 |
-| **Botão 5** | GPIO 25 |
-| **Botão 6** | GPIO 33 |
-| **Botão 7** | GPIO 32 |
-| **Mux Seleção A** | GPIO 15 |
-| **Mux Seleção B** | GPIO 2 |
-| **Mux Seleção C** | GPIO 5 |
+| **Button 0** | GPIO 13 |
+| **Button 1** | GPIO 12 |
+| **Button 2** | GPIO 14 |
+| **Button 3** | GPIO 27 |
+| **Button 4** | GPIO 26 |
+| **Button 5** | GPIO 25 |
+| **Button 6** | GPIO 33 |
+| **Button 7** | GPIO 32 |
+| **Mux Select A** | GPIO 15 |
+| **Mux Select B** | GPIO 2 |
+| **Mux Select C** | GPIO 5 |
 
-## Dependências e Bibliotecas
-Para compilar e executar este código, é necessário instalar as seguintes bibliotecas na sua IDE:
-* `Wire.h` (Nativa)
+---
+
+## Dependencies and Libraries
+
+To compile and run this project, the following libraries must be installed in your IDE:
+
+* `Wire.h` (built-in)
 * `Adafruit_GFX.h`
 * `Adafruit_SSD1306.h`
 
-**Nota:** O projeto depende de um arquivo local chamado `teams.h`. Este arquivo deve conter os arrays de bytes (bitmaps) em formato hexadecimal para a renderização dos logotipos dos times e dos torneios na tela OLED.
+**Note:** The project depends on a local file named `teams.h`.  
+This file must contain the **byte arrays (hexadecimal bitmaps)** used to render the team and tournament logos on the OLED displays.
 
-## Lógica de Funcionamento
-1. **Inicialização:** Os pinos são configurados e os displays são inicializados através da varredura do multiplexador.
-2. **Seleção de Torneio:** Cada display mostra o logo de um torneio. O jogador pressiona o botão correspondente ao torneio desejado.
-3. **Memorização:** O sistema sorteia as posições, embaralha os times do torneio escolhido e os exibe por 2 segundos (`TEMPO_EXIBICAO`).
-4. **Loop de Jogo:** As telas são apagadas. O sistema aguarda o jogador pressionar dois botões.
-   * Se os times coincidirem: Os displays correspondentes são desativados desta rodada e um som de acerto é emitido.
-   * Se os times não coincidirem: Um som de erro é emitido e os displays são apagados novamente.
-5. **Fim de Jogo:** Ao acertar os 4 pares, uma imagem de comemoração é exibida simultaneamente nos 8 displays, acompanhada de uma melodia programada.
+---
+
+## System Logic
+
+1. **Initialization**  
+   Pins are configured and all displays are initialized by scanning through the multiplexer.
+
+2. **Tournament Selection**  
+   Each display shows a tournament logo. The player presses the button corresponding to the desired tournament.
+
+3. **Memorization Phase**  
+   The system randomly assigns positions, shuffles the teams of the selected tournament, and displays them for **2 seconds (`TEMPO_EXIBICAO`)**.
+
+4. **Game Loop**  
+   All displays are cleared. The system waits for the player to press two buttons.
+
+   * **Match:** The corresponding displays remain revealed and a success sound is played.
+   * **Mismatch:** An error sound is played and the displays are cleared again.
+
+5. **Game Completion**  
+   When all **4 pairs** are found, a celebration image is displayed simultaneously on all **8 screens**, accompanied by a programmed melody.
